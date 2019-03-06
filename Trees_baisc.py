@@ -16,9 +16,10 @@ myTree = ['a',   #root
        [] ]
      ]
 #print(myTree)
-print('left subtree = ', myTree[1])
-print('root = ', myTree[0])
-print('right subtree = ', myTree[2])
+#print('left subtree = ', myTree[1])
+#print('root = ', myTree[0])
+#print('right subtree = ', myTree[2])
+
 
 def BinaryTree(r):
     return [r, [], []]  ##跟r同一个level，紧贴着r后面的逗号的括号里的内容，就是左子树和有子树的内容
@@ -55,38 +56,88 @@ def getRightChild(root):
     return root[2]
 
 
-a = BinaryTree('a')
-print(a)
-print(a[0])
-b= insertLeft(a,'b')
-print(b)
-print(b[0])
-print(b[1])
-print(b[2])
-c = insertRight(b,'c')
-print(c)
-print(c[1])
-print(c[2])
-d= insertLeft(c,'d')
-print(d)
-print(d[1])
-print(d[2])
-e = insertRight(d,'e')
-print(e)
-print(e[1])
-print(e[2])
-f = insertRight(a[1],'f')  ##这样相当于给d点添加一个右节点f
-print(a)
-print(a[1][1][0])   ##打印出a的左节点的左节点的不带子点，相当于b
-print(a[1][2])   ##打印出a的左节点的右节点带上子点，相当于f
-print(a[2][0])   ##打印出a的右节点的唯一的点不带子点，相当于e
-print(a[2][2])   ##打印出a的右节点的右节点带上子点，相当于c
-g = insertLeft(a[2],'g') ##给e点添加一个左节点g
-print(a)
-o = insertRight(a[2][1],'o') ##给g点添加一个左节点o
-print(a)
-t = insertLeft(a[1],'t')
-print(a)
-print('#######################################')
-print(getLeftChild(a[2]))
-print(getRootVal(d))
+#a = BinaryTree('a')
+#print(a)
+#print(a[0])
+#b= insertLeft(a,'b')
+#print(b)
+#print(b[0])
+#print(b[1])
+#print(b[2])
+#c = insertRight(b,'c')
+#print(c)
+#print(c[1])
+#print(c[2])
+#d= insertLeft(c,'d')
+#print(d)
+#print(d[1])
+#print(d[2])
+#e = insertRight(d,'e')
+#print(e)
+#print(e[1])
+#print(e[2])
+#f = insertRight(a[1],'f')  ##这样相当于给d点添加一个右节点f
+#print(a)
+#print(a[1][1][0])   ##打印出a的左节点的左节点的不带子点，相当于b
+#print(a[1][2])   ##打印出a的左节点的右节点带上子点，相当于f
+#print(a[2][0])   ##打印出a的右节点的唯一的点不带子点，相当于e
+#print(a[2][2])   ##打印出a的右节点的右节点带上子点，相当于c
+#g = insertLeft(a[2],'g') ##给e点添加一个左节点g
+#print(a)
+#o = insertRight(a[2][1],'o') ##给g点添加一个左节点o
+#print(a)
+#t = insertLeft(a[1],'t')
+#print(a)
+#print('#######################################')
+#print(getLeftChild(a[2]))
+#print(getRootVal(d))
+
+'''用节点表示树'''
+####用节点表示树回非常像用节点表示ordered/unordered list
+class BinaryTree1():
+    def __init__(self,rootObj):
+        self.rootObj = rootObj
+#        self.key = rootObj    ##用节点的名称作为root的value
+        self.leftChild = None
+        self.rightChild = None
+        
+        
+        '''插入左子树和右子树有点像在ordered/unordered list里的头插入点'''
+    def insertLeft(self,newNode):  
+        if self.leftChild == None:
+            self.leftChild = BinaryTree1(newNode)
+        else:##还是一样的，如果本来左子树有东西，就把要插的点放在离根最接近的地方，原来的左子树作为新的点的左子树
+            t = BinaryTree1(newNode)
+            t.leftChild = self.leftChild
+            self.leftChild = t
+            
+    def insertRight(self,newNode):
+        if self.rightChild == None:
+            self.rightChild = BinaryTree1(newNode)
+        else:
+            t = BinaryTree1(newNode)   ##先创造要插入的点的树的对象
+            t.rightChild = self.rightChild  ##然后把已经有的作为要插入的点的右子树
+            self.rightChild = t ##然后在根部插入新插入的点
+            
+    def getRightChild(self):
+        return self.rightChild
+
+    def getLeftChild(self):
+        return self.leftChild
+    
+    def setRootVal(self,obj):
+        self.rootObj = obj
+    
+    def getRootVal(self):
+        return self.rootObj
+
+Tree = BinaryTree1('a')
+print(Tree.leftChild)
+print(Tree.getRootVal())
+Tree.insertLeft('c')
+#print(Tree.leftChild)
+print(Tree.getLeftChild().getRootVal())   
+Tree.insertLeft('b')
+print(Tree.getLeftChild().getRootVal())  
+print(Tree.getLeftChild().getLeftChild().getRootVal())  
+     

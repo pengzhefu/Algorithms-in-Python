@@ -131,13 +131,119 @@ class BinaryTree1():
     def getRootVal(self):
         return self.rootObj
 
-Tree = BinaryTree1('a')
-print(Tree.leftChild)
-print(Tree.getRootVal())
-Tree.insertLeft('c')
+#Tree = BinaryTree1('a')
 #print(Tree.leftChild)
-print(Tree.getLeftChild().getRootVal())   
-Tree.insertLeft('b')
-print(Tree.getLeftChild().getRootVal())  
-print(Tree.getLeftChild().getLeftChild().getRootVal())  
-     
+#print(Tree.getRootVal())
+#
+#Tree.insertLeft('c')
+##print(Tree.leftChild)
+#print(Tree.getLeftChild().getRootVal())   
+#print('==================================')
+#Tree.insertLeft('b')
+#print(Tree.getLeftChild().getRootVal())  
+#print(Tree.getLeftChild().getLeftChild().getRootVal())  
+#print('==================================')
+#Tree.getLeftChild().insertLeft('d') ##在a（根节点）的下一个左节点插入一个左节点d
+#print(Tree.getLeftChild().getRootVal())  
+#print(Tree.getLeftChild().getLeftChild().getRootVal())   
+#print(Tree.getLeftChild().getLeftChild().getLeftChild().getRootVal())
+
+'''树的遍历'''
+###Preorder pass
+
+## 递归版
+def preorder(tree):   ##其实递归的里面就对三种顺序解释很清楚
+                        ## 先序就是先根，然后再左子树，左完了再右
+    if tree:
+        print(tree.getRootVal())
+        preorder(tree.getLeftChild())
+        preorder(tree.getRightChild())
+## 非递归版
+'''
+1. 使用列表保存结果；
+2. 使用栈（列表实现）存储结点； ##这个第二步是重点，要用栈来保存我们已经遍历的节点，然后直到这个节点的左子树为空，我们在看右子树
+3. 当根结点存在，保存结果，根结点入栈；
+4. 将根结点指向左子树；
+5. 根结点不存在，栈顶元素出栈，并将根结点指向栈顶元素的右子树；
+6. 重复步骤3-6，直到栈空。
+'''
+def preorderTraversal(root):
+    """
+    :type root: TreeNode
+    :rtype: List[int]
+    """
+    ret = []
+    stack = []
+    while root or stack:   ##根节点不为空，就是整个的起始条件
+                            ##但后面只要还有没遍历完的
+                            
+                            ###也就是说，root为None但是stack不为空的时候，就会进入 if stack,回到父节点进行查看右子树
+                            
+        while root:         ##有根节点的时候，就一直进行这个循环
+            ret.append(root.getRootVal)  ##把根节点的值存在ret列表里
+            stack.append(root)    ##然后把这个已经遍历了的root存下来放stack里，可能后面还要用
+            root = root.getLeftChild()      ##然后去看这个root的左子树的根节点
+            
+        if stack: ##直到上面的发现没有左子树了，就来找父节点（刚刚遍历的那个点上面的点）的右子树
+                    ##此时，root = None
+            t = stack.pop()
+            root = t.getRightChild()
+    return ret ##最后列表里面的元素顺序就是先序的顺序
+
+###Inorder Pass
+## 递归版
+def inorder(tree):
+  if tree != None:
+      inorder(tree.getLeftChild())
+      print(tree.getRootVal())
+      inorder(tree.getRightChild())
+
+##非递归版      
+def inorderTraversal(root):
+    """
+    :type root: TreeNode
+    :rtype: List[int]
+    """
+    ret = []    ##返回中序顺序结果
+    stack = []  ##用来存节点
+    while root or stack:   ##根节点不为空，就是整个的起始条件
+                            ##但后面只要还有没遍历完的点，就会继续循环遍历
+                            ###也就是说，root为None但是stack不为空的时候，就会进入 if stack,回到父节点进行查看右子树
+                            
+        while root:         ##有根节点的时候，就一直进行这个循环
+            stack.append(root)
+            root = root.getLeftChild()
+        if stack: ##直到上面的发现没有左子树了，就把这个结果存下来，并且找这个点的右子树
+                    ##此时root = None
+            t = stack.pop()
+            ret.append(t.getRootVal())   ##和先序最大的不同就是，直到这个点(root)没有左子树了，才把这个点(root)存在结果里
+            root = t.getRightChild()
+    return ret ##最后列表里面的元素顺序就是中序的顺序
+
+##Postorder Pass
+## 递归版
+def postorder(tree):
+    if tree != None:
+        postorder(tree.getLeftChild())
+        postorder(tree.getRightChild())
+        print(tree.getRootVal())
+        
+## 非递归版,后序的比中序和先序都难很多
+        ##所以采用了一种逆序版本，就是先把逆序顺序中最后的存下来
+        ##但是！！！！！因为后序就相当于把先序的根左右变成根右左，然后再倒过来，所以改一下先序的，再逆输出就行了
+def postorderTraversal(root):
+    """
+    :type root: TreeNode
+    :rtype: List[int]
+    """
+    ret = []    ##返回中序顺序结果
+    stack = []  ##用来存节点
+    while root:
+        ret.append(root.getRotVal())
+        stack.append(root)
+        root.getRightChild()##这里和先序反过来，先去找左子树
+    if stack:
+        t = stack.pop()
+        root = t.getLeftChild() ##这里也和先序反过来，右边找完了再去找左边
+    ret.reverse()        ##因为是逆序，所以要反过来
+    return ret 

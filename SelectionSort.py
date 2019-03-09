@@ -6,6 +6,8 @@ Created on Thu Feb 21 23:09:03 2019
 """
 
 ######选择（Selection）排序##########
+
+#####选择排序就相当于每遍历次都找到那一次遍历的最大的数，然后放进相应的位置。
 def SelectionSort(alist):  ##Writen by my own
        num_pass = len(alist) -1  ##遍历次数总共n-1次
        while num_pass > 0:
@@ -13,9 +15,10 @@ def SelectionSort(alist):  ##Writen by my own
            for i in range(num_pass):
                if alist[largest_idx] < alist[i+1]:
                    largest_idx = i+1
-           print(alist[largest_idx]) 
-           alist[num_pass], alist[largest_idx] = alist[largest_idx],alist[num_pass]
+#           print(alist[largest_idx]) 
+           alist[num_pass], alist[largest_idx] = alist[largest_idx],alist[num_pass]  ##进行交换
            num_pass = num_pass - 1
+       return alist
 list2 = [54,26,93,17,77,31,44,55,20]
 SelectionSort(list2)
 
@@ -27,6 +30,7 @@ def selectionSort(alist):
                positionOfMax = location
 
        temp = alist[fillslot]
+       ##进行交换
        alist[fillslot] = alist[positionOfMax]
        alist[positionOfMax] = temp
 

@@ -175,19 +175,19 @@ def preorderTraversal(root):
     ret = []
     stack = []
     while root or stack:   ##根节点不为空，就是整个的起始条件
-                            ##但后面只要还有没遍历完的
+                            ##但后面只要还有没遍历完的这个循环就会继续
                             
                             ###也就是说，root为None但是stack不为空的时候，就会进入 if stack,回到父节点进行查看右子树
                             
-        while root:         ##有根节点的时候，就一直进行这个循环
-            ret.append(root.getRootVal)  ##把根节点的值存在ret列表里
-            stack.append(root)    ##然后把这个已经遍历了的root存下来放stack里，可能后面还要用
-            root = root.getLeftChild()      ##然后去看这个root的左子树的根节点
+        while root:         ##左子树有节点的时候，就一直进行这个循环
+            ret.append(root.getRootVal())  ##把根节点的值存在ret列表里,这一步是根
+            stack.append(root)    ##然后把这个已经遍历了的root存下来放stack里，后面还要用
+            root = root.getLeftChild()      ##然后去看这个root的左子树的根节点，这一步是左
             
         if stack: ##直到上面的发现没有左子树了，就来找父节点（刚刚遍历的那个点上面的点）的右子树
                     ##此时，root = None
             t = stack.pop()
-            root = t.getRightChild()
+            root = t.getRightChild() ##这一步是右
     return ret ##最后列表里面的元素顺序就是先序的顺序
 
 ###Inorder Pass
@@ -206,19 +206,21 @@ def inorderTraversal(root):
     """
     ret = []    ##返回中序顺序结果
     stack = []  ##用来存节点
-    while root or stack:   ##根节点不为空，就是整个的起始条件
-                            ##但后面只要还有没遍历完的点，就会继续循环遍历
-                            ###也就是说，root为None但是stack不为空的时候，就会进入 if stack,回到父节点进行查看右子树
+    while root or stack:   ## 根节点不为空，就是整个的起始条件
+                            ## 但后面只要还有没遍历完的点，就会继续循环遍历
+                            ## 也就是说，root为None但是stack不为空的时候，就会进入 if stack,回到父节点进行查看右子树
                             
-        while root:         ##有根节点的时候，就一直进行这个循环
-            stack.append(root)
+        while root:         ## 有根节点的时候，就一直进行这个循环
+            stack.append(root)  ## 然后把这个已经遍历了的root存下来放stack里，可能后面还要用
             root = root.getLeftChild()
-        if stack: ##直到上面的发现没有左子树了，就把这个结果存下来，并且找这个点的右子树
-                    ##此时root = None
-            t = stack.pop()
-            ret.append(t.getRootVal())   ##和先序最大的不同就是，直到这个点(root)没有左子树了，才把这个点(root)存在结果里
+        if stack: ## 没有左子树了，就跳进这个if条件
+                  ## 直到上面的发现没有左子树了，就把这个记存下来，并且找这个点的右子树
+                    ## 此时root = None
+            t = stack.pop()  
+            ret.append(t.getRootVal())   ## 和先序最大的不同就是，直到这个点(root)没有左子树了，才把这个点(root)存在结果里
             root = t.getRightChild()
-    return ret ##最后列表里面的元素顺序就是中序的顺序
+    return ret ## 最后列表里面的元素顺序就是中序的顺序
+
 
 ##Postorder Pass
 ## 递归版
@@ -227,7 +229,8 @@ def postorder(tree):
         postorder(tree.getLeftChild())
         postorder(tree.getRightChild())
         print(tree.getRootVal())
-        
+
+
 ## 非递归版,后序的比中序和先序都难很多
         ##所以采用了一种逆序版本，就是先把逆序顺序中最后的存下来
         ##但是！！！！！因为后序就相当于把先序的根左右变成根右左，然后再倒过来，所以改一下先序的，再逆输出就行了

@@ -20,6 +20,7 @@ def binarySearch(alist, item):
             final = mid - 1
     
     return found
+#    return first  ## 此时如果没找到的话，那么return的first的值就是这个数插入这个列表的index
 
 list2 = [1,4,5,7,10,14,15,17]
 print(binarySearch(list2,4.5))
@@ -39,4 +40,4 @@ def RebinarySearch(alist,item):
         else:
             return RebinarySearch(alist[mid+1:],item)
 testlist = [0, 1, 2, 8, 13, 17, 19, 32, 42]
-print(RebinarySearch(testlist,30))
+#print(RebinarySearch(testlist,30))

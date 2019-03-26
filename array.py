@@ -72,8 +72,8 @@ def reversal(list1,start,last):  ## 加上两个参数start和last帮助reversal
         start += 1
         last -= 1
     return list1
-arr = [1,2,3,4,5]
-a = reversal(arr,0,3)
+#arr = [1,2,3,4,5]
+#a = reversal(arr,0,3)
 #list1 = [1,2,3,4,5]
 def rotate4(list1,d):
     reversal(list1,0,d-1)   ## 因为index是从0开始的，所以前d个是0--d-1
@@ -81,16 +81,16 @@ def rotate4(list1,d):
     reversal(list1,0,len(list1)-1)
     return list1
 
-arr=[1,2,3,4,5,6,7,8,9,10]
-print(rotate4(arr,9))
+#arr=[1,2,3,4,5,6,7,8,9,10]
+#print(rotate4(arr,9))
 
-## rightRotate就是和left反过来
+## rightRotate就是和left不同的地方在于，先整体调换，然后转前半部分，然后转后半部分
 def RightRotate(list1,d):
     reversal(list1,0,len(list1)-1)   
     reversal(list1,0,d-1)
     reversal(list1,d,len(list1)-1)
     return list1
-arr=[1,2,3,4,5,6,7,8,9,10]
+#arr=[1,2,3,4,5,6,7,8,9,10]
 #print(RightRotate(arr,3))
 
 '''
@@ -114,4 +114,138 @@ def leftRotate(arr,k1):
     return arr
 #print(leftRotate([1,3,5,7,9],14))
     
-##  
+##  Devise a way to find an element in the rotated array in O(log n) time.
+'''
+The idea is to find the pivot point, divide the array in two sub-arrays and call binary search.
+The main idea for finding pivot is – for a sorted (in increasing order) and pivoted array, 
+pivot element is the only element for which next element to it is smaller than it.
+Using above criteria and binary search methodology we can get pivot element in O(logn) time
+'''
+# Function to get pivot. For array  
+# 3, 4, 5, 6, 1, 2 it returns 3  
+# (index of 6) 
+
+## 所以是找pivot用O(logn),再二分法找用O(logn),两个O(logn)就是O(logn) 
+def findPivot(arr, low, high):   ## 用二分法的思想来找pivot点，所以也是O(logn)
+      
+    # base cases 
+    if high < low: 
+        return -1
+    if high == low: 
+        return low 
+      
+    mid = int((low + high)/2) 
+      
+    if mid < high and arr[mid] > arr[mid + 1]: #加上mid<high和mid > low的条件是防止mid到了边界,pivot不可能在首尾
+        return mid 
+    if mid > low and arr[mid] < arr[mid - 1]: 
+        return (mid-1)
+    ## 如果没找到，接着分
+    if arr[low] >= arr[mid]: ## 列表首位的很大，说明前面很短，pivot在前半段 
+        return findPivot(arr, low, mid-1) 
+    return findPivot(arr, mid + 1, high)  ## 列表的首位不大，说明前面比较长，pivot在后半段
+def binarySearch(arr,k):
+    start = 0
+    last = len(arr)-1
+    find = False
+    while not find:
+        mid = (start + last)//2
+        if arr[mid] == k:
+            return mid
+        elif arr[mid] > k:
+            last = mid - 1
+        else:
+            start = start + 1
+#arr1 = [3,4,5,6,1,2]
+#b = findPivot(arr1,0,4)
+#arr2 = [1,2,3,4,5]
+#c = binarySearch(arr2,4)
+def findElement(arr,n,key):
+    pivot = findPivot(arr,0,n-1)
+    if key < arr[0]:
+        return pivot+1+binarySearch(arr[pivot+1:],key)
+    elif key > arr[0]:
+        return binarySearch(arr[:pivot+1],key)
+    else:
+        return pivot
+
+#arr = [4,5,6,7,8,9,10,1,2,3]
+#b = findElement(arr,10,1)
+    
+'''
+Given a sorted and rotated array, find if there is a pair with a given sum
+
+Given an array that is sorted and then rotated around an unknown point. Find if the array 
+has a pair with a given sum ‘x’. 
+It may be assumed that all elements in the array are distinct.  
+'''
+## 很简单，还是用双指针，只是要先找到pivot，也就是last,往后一位就是first
+def findPair(arr,k):
+    last = findPivot(arr,0,len(arr)-1)
+    first = last+1
+    find = False
+    while not find:
+        ## 先调整,把last和first换成正常的index
+        if first < 0:
+            i = first + len(arr)
+        elif first >= len(arr):
+            i = first - len(arr)
+        else:
+            i = first
+        if last < 0:
+            j = last + len(arr)
+        elif last >= len(arr):
+            j = last - len(arr)
+        else:
+            j = last
+        ## 再进行比较，然后移动坐标
+        if i != j:  ## 如果两个的index相等了，说明找了一圈没找到了，就直接break
+            if arr[i] + arr[j] == k:
+                find = True
+            elif arr[i] + arr[j] < k:
+                first = first+1
+            else:
+                last = last-1
+        else:
+            break
+#    print(first,last)
+#    print(i,j)
+    return find
+a = findPair([4,5,6,7,1,2,3],9)
+
+## 升级难度
+'''
+How to count all pairs having sum x?
+'''
+def countPair(arr,k):
+    last = findPivot(arr,0,len(arr)-1)
+    first = last + 1
+    finding = True
+    cnt = 0
+    while finding:
+        ## 先调整,把last和first换成正常的index
+        if first < 0:
+            i = first + len(arr)
+        elif first >= len(arr):
+            i = first - len(arr)
+        else:
+            i = first
+        if last < 0:
+            j = last + len(arr)
+        elif last >= len(arr):
+            j = last - len(arr)
+        else:
+            j = last
+        if i != j:  ## 如果两个的index相等了，说明找了一圈没找到了，就直接break
+            if arr[i] + arr[j] == k:
+                cnt = cnt+1   ## 找到了以后，计数+1
+                first = first+1  ## 并且移动其中一个，继续找
+            elif arr[i] + arr[j] < k:
+                first = first+1
+            else:
+                last = last-1
+        else:  ## 直到首尾的index相等了，才跳出循环
+            break
+    return cnt
+
+b = countPair([4,5,6,7,1,2,3],14)    

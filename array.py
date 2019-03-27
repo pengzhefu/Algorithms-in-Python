@@ -343,7 +343,7 @@ def partition(alist,first,last):
    return rightmark
 ## 找第k小
    ## 比如现在我要找第2小，那就是index为1
-arr = [58,26,93,17,77,31,44,55,20,78,109,225,8,10,11,45,87,23]
+#arr = [58,26,93,17,77,31,44,55,20,78,109,225,8,10,11,45,87,23]
 
 def findKthMin(arr,k):
     a = partition(arr,0,len(arr)-1)
@@ -354,8 +354,8 @@ def findKthMin(arr,k):
             a = partition(arr,a+1,len(arr)-1)
 #    partition(arr[:a+1],0,k-1)
     return arr[a]
-res = findKthMin(arr,7)
-print(res)
+#res = findKthMin(arr,7)
+#print(res)
 ## 找第k大，其实就相当于找第(len(arr)-k)小
 def findKthMax(arr,k):
     idx = partition(arr,0,len(arr)-1)
@@ -366,7 +366,9 @@ def findKthMax(arr,k):
         elif idx < target:
             idx = partition(arr,idx+1,len(arr)-1)
         
-    return arr[idx]
+    return arr[idx:]
+#res = findKthMax(arr,8)
+#print(res)
 '''
 找到第k大或者第k小后，就对这之后的一段进行quicksort就行了，
 大的:arr[k:]

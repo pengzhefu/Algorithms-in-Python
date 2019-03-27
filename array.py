@@ -211,7 +211,7 @@ def findPair(arr,k):
 #    print(first,last)
 #    print(i,j)
     return find
-a = findPair([4,5,6,7,1,2,3],9)
+#a = findPair([4,5,6,7,1,2,3],9)
 
 ## 升级难度
 '''
@@ -248,4 +248,128 @@ def countPair(arr,k):
             break
     return cnt
 
-b = countPair([4,5,6,7,1,2,3],14)    
+#b = countPair([4,5,6,7,1,2,3],14)  
+    
+'''
+
+Find maximum value of Sum( i*arr[i]) with only rotations on given array allowed
+
+Given an array, only rotation operation is allowed on array. We can rotate the 
+array as many times as we want. Return the maximum possbile of summation of i*arr[i].
+
+Examples :
+
+Input: arr[] = {1, 20, 2, 10}
+Output: 72
+We can 72 by rotating array twice.
+{2, 10, 1, 20}
+20*3 + 1*2 + 10*1 + 2*0 = 72
+
+Input: arr[] = {10, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+Output: 330
+We can 330 by rotating array 9 times.
+{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+0*1 + 1*2 + 2*3 ... 9*10 = 330
+'''
+def maxSum(arr):     ## 相当于只用遍历列表两次，time complexity is O(n)
+    times = len(arr)-1
+    n = len(arr)
+    arrsum = 0
+    res = 0
+    j = 0
+    while j < len(arr):  ## 把初始结果和arrsum一起算！
+        res += j*arr[j]
+        arrsum += arr[j]
+        j +=1
+    i = 1
+    cur_res = res
+    while i <= times:
+        cur_res = cur_res + arrsum-n*arr[n-i]
+        res = max(res,cur_res)
+        i = i+1
+    return res
+#a = maxSum([1,2,3,4,5,6,7,8,9,10])
+
+## 找一个乱序序列的前k个最大的数
+'''
+For example, if given array is [1, 23, 12, 9, 30, 2, 50] and you are 
+asked for the largest 3 elements i.e., k = 3 then your program should print 50, 30 and 23.
+'''
+def findMax1(arr,k):    ## Written by my own, time complexity is O(k*n)
+    for j in range(k):
+        res1 = arr[0]
+        for i in range(len(arr)-j):
+            if arr[i] > res1:
+                res1 = arr[i]
+                index = i
+        arr[i], arr[index] = arr[index], arr[i]
+    for k in range(len(arr)-1,len(arr)-1-k,-1):
+        print(arr[k], end= ',')
+arr = [1,23,12,9,30,2,50,43]
+#findMax1(arr,3)
+
+## 先尝试找第k小
+def partition(alist,first,last):
+   pivotvalue = alist[first]
+
+   leftmark = first+1
+   rightmark = last
+
+   done = False
+   while not done:
+       #####一定要先移动left!
+       while leftmark <= rightmark and alist[leftmark] <= pivotvalue:
+           leftmark = leftmark + 1
+          
+        ####这个条件的大于等于，就是为了找到离leftmark最近的那个rightmark的跳出点，就是split point
+        ####因为split point一般其实都在leftmark的附近，也就是离leftmark最近的rightmark,一般为left-1
+       while alist[rightmark] >= pivotvalue and rightmark >= leftmark:
+           rightmark = rightmark -1
+
+       if rightmark < leftmark:##发现如果已经是cross了，那就跳出，进行pivot的swap
+                               ##在移动了left和right之后再检查,给right<left的一个机会
+           done = True
+       else:
+#           print("Now we exchange:",alist[leftmark], alist[rightmark])
+           ##进行一次普通交换
+           alist[leftmark], alist[rightmark] = alist[rightmark], alist[leftmark]
+           
+
+#   print("left is,",leftmark)
+   ##把pivot和split point的值互换，让pivot做分割点 
+   alist[first], alist[rightmark] = alist[rightmark], alist[first]
+   
+   
+   return rightmark
+## 找第k小
+   ## 比如现在我要找第2小，那就是index为1
+arr = [58,26,93,17,77,31,44,55,20,78,109,225,8,10,11,45,87,23]
+
+def findKthMin(arr,k):
+    a = partition(arr,0,len(arr)-1)
+    while a != k-1:
+        if a >k-1:
+            a = partition(arr,0,a-1)
+        elif a < k-1:
+            a = partition(arr,a+1,len(arr)-1)
+#    partition(arr[:a+1],0,k-1)
+    return arr[a]
+res = findKthMin(arr,7)
+print(res)
+## 找第k大，其实就相当于找第(len(arr)-k)小
+def findKthMax(arr,k):
+    idx = partition(arr,0,len(arr)-1)
+    target = len(arr)-k   ## 就这一步转换一下，其他都和找第k小一样
+    while idx != target:
+        if idx > target:
+            idx = partition(arr,0,idx-1)
+        elif idx < target:
+            idx = partition(arr,idx+1,len(arr)-1)
+        
+    return arr[idx]
+'''
+找到第k大或者第k小后，就对这之后的一段进行quicksort就行了，
+大的:arr[k:]
+小的:arr[:k+1]
+整体复杂度的平均值为O(n),因为要进行quicksort的序列短了很多
+'''

@@ -244,7 +244,7 @@ def postorderTraversal(root):
     while root:
         ret.append(root.getRotVal())
         stack.append(root)
-        root.getRightChild()##这里和先序反过来，先去找左子树
+        root.getRightChild()##这里和先序反过来，先去找右子树
     if stack:
         t = stack.pop()
         root = t.getLeftChild() ##这里也和先序反过来，右边找完了再去找左边

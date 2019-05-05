@@ -21,6 +21,8 @@ graph = {
 def BFS(graph, s):  ## graph是图, s是起始点
     queue = []   ## 用一个列表模拟队列, 每一次把当前正在走的相邻的点放进队列里,保证每层的顺序
     ret = []
+    parent = {}   ## parent是转换成树的结构，key是当前点，value是他的前一个点的值
+    parent[s] = None
     queue.append(s)  ## 先把起点放进队列
     while queue != []:
         print(queue)
@@ -32,11 +34,12 @@ def BFS(graph, s):  ## graph是图, s是起始点
 #            if point not in queue:
             if point in graph and point not in queue:   ## 如果这个点的连接点没被遍历过，也不在之前点的相邻点里
                 queue.append(point)   ## 如果都遍历过了, 那最后一个点的所有邻接点都不能放进队列了
+                parent[point] = vertex
         del graph[vertex]   ## 遍历这个点就删掉了
 #        print(vertex)
-    return ret
+    return ret,parent
 
-res = BFS(graph,"E")
+res,parent = BFS(graph,"A")
     
 def DFS(graph, s): ## graph是图, s是起点
     stack = []  ## using a list to act like stack
@@ -56,4 +59,4 @@ def DFS(graph, s): ## graph是图, s是起点
     return ret
 
 #res = DFS(graph,"A")
-            
+    

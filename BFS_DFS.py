@@ -21,7 +21,7 @@ graph = {
 def BFS(graph, s):  ## graph是图, s是起始点
     queue = []   ## 用一个列表模拟队列, 每一次把当前正在走的相邻的点放进队列里,保证每层的顺序
     ret = []
-    parent = {}   ## parent是转换成树的结构，key是当前点，value是他的前一个点的值
+    parent = {}   ## parent是转换成树的结构，key是当前点，value是他的前一个点的值，有parent就方便找root到一个点的最小距离
     parent[s] = None
     queue.append(s)  ## 先把起点放进队列
     while queue != []:
@@ -39,8 +39,18 @@ def BFS(graph, s):  ## graph是图, s是起始点
 #        print(vertex)
     return ret,parent
 
-res,parent = BFS(graph,"A")
-    
+
+#res,parent = BFS(graph,"A")
+
+## 有parent以后，就可以根据这个parent字典，和我们规定的作为root的点，到其他点的最小距离
+#destination = 'F'  ## point of destination
+#length = -1
+#path = []
+#while destination != None:
+#    path.append(destination)
+#    destination = parent[destination]
+#    length += 1
+
 def DFS(graph, s): ## graph是图, s是起点
     stack = []  ## using a list to act like stack
     ret = []
@@ -59,4 +69,48 @@ def DFS(graph, s): ## graph是图, s是起点
     return ret
 
 #res = DFS(graph,"A")
-    
+
+'''
+BFS升级变成Dijkstra算法，要用到priority queue, 用heapq来模拟priority queue
+'''
+import heapq
+graph_w = {
+        "A":{"B":5,"C":1},
+        "B":{"A":5,"C":2,"D":7},
+        "C":{"A":1,"B":2,"D":4,"E":8},
+        "D":{"B":1,"C":4,"E":3,"F":6},
+        "E":{"C":8,"D":3},
+        "F":{"D":6}
+        }
+def BFS_Dijk(graph_w,s):   ## s是起始点
+    pqueue = []  ## 用列表来模拟priority queue
+    ret = []   ## 返回结果的列表
+    parent = {s:None}   ## 存储每一个点的距离自己最近的上一个点
+    dist = {s:0}   ## 存储距离，距离是起始点s到这个点的最短距离, key是点, value是距离 
+    heapq.heappush(pqueue,(dist[s], s))
+    while len(pqueue) != 0:
+        print(pqueue)
+        vertex = heapq.heappop(pqueue)   ## vertex just like (1,"A")
+        print(vertex)
+        print('=====================')
+        if vertex[1] not in ret:   ## 已经放在ret里的说明是已经彻底遍历完的点
+            ret.append(vertex[1])
+            print(graph_w[vertex[1]]) ## graph_w[vertex[1]] just like {'A':4, 'B':5}
+            for point_w in graph_w[vertex[1]]:
+                if point_w in graph_w:  ## dict的in搜索要快一点，比list快，是O(1)
+                    heapq.heappush(pqueue, (dist[vertex[1]]+graph_w[vertex[1]][point_w], point_w))  ## 应该是距离之和
+                    ## 放进priority queue的时候还不用比较，但是更新到dist和parent字典时候，需要比较，比原来小才更新
+                    if point_w not in dist:    ## 这里一定要加一段比较！！！
+                        dist[point_w] = dist[vertex[1]]+graph_w[vertex[1]][point_w]
+                        parent[point_w] = vertex[1]
+                    else:
+                        if dist[point_w] > dist[vertex[1]]+graph_w[vertex[1]][point_w]: ## important!!!
+                            dist[point_w] = dist[vertex[1]]+graph_w[vertex[1]][point_w]
+                            parent[point_w] = vertex[1]
+                        else:
+                            pass
+            del graph_w[vertex[1]]   ## 彻底遍历过的点就删掉
+        print('dist is',dist)
+        print('=======dist======')
+    return ret,dist,parent
+a,b,c = BFS_Dijk(graph_w, "A")

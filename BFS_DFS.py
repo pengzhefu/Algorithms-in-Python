@@ -100,6 +100,9 @@ def BFS_Dijk(graph_w,s):   ## s是起始点
                 if point_w in graph_w:  ## dict的in搜索要快一点，比list快，是O(1)
                                         ## 这一步是说如果和这个vertex相连的点,还没有被完全遍历过的话
                                         ## point_w是和vertex相连的点
+                    '''
+                    最重要的就是下面这一部！！！再放进heap的时候应该用的是距离之和！
+                    '''
                     heapq.heappush(pqueue, (dist[vertex[1]]+graph_w[vertex[1]][point_w], point_w))  ## 应该是距离之和
                     ## 放进priority queue的时候还不用比较，但是更新到dist和parent字典时候，需要比较，比原来小才更新
                     if point_w not in dist:    ## 这里一定要加一段比较！！！

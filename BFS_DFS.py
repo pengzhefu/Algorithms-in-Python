@@ -39,7 +39,15 @@ def BFS(graph, s):  ## graph是图, s是起始点
 #        print(vertex)
     return ret,parent
 
-
+# 一种比较基本的针对树结构的DFS, 有其他需求可以再在这个上面添加，参考如下
+# https://leetcode.jp/leetcode%E5%B8%B8%E8%A7%81%E7%AE%97%E6%B3%95%E4%B9%8B%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2dfs%E8%B6%85%E8%AF%A6%E7%BB%86%E7%99%BD%E8%AF%9D%E8%AE%B2%E8%A7%A3%E4%B8%8A/
+def DFS_recur(node):  # node是叶子节点
+    if node.leftchild == None and node.rightchild == None:
+        return
+    if node.leftchild != None:
+        DFS_recur(node.leftchild)
+    if node.rightchild != None:
+        DFS_recur(node.rightchild)
 #res,parent = BFS(graph,"A")
 
 ## 有parent以后，就可以根据这个parent字典，和我们规定的作为root的点，到其他点的最小距离

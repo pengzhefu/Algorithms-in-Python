@@ -10,6 +10,7 @@ KMP Search
 '''
 
 def get_next_arr(s):
+	# next数组是求一个字符串最长的相同前缀后缀的长度
 	next_arr = [0 for i in range(len(s))]
 	i = 1  # 从第二个开始找, 第一个永远是0
 	now = next_arr[i-1]
@@ -39,10 +40,10 @@ def kmp_search(s,p):
 			if p_id == 0:
 				s_id += 1
 			else:
-				p_id = next_arr[p_id-1]
+				p_id = next_arr[p_id-1]  # 往前移
 		if p_id = len(p):
 			res.append(s_id - p_id)
-			p_id = next_arr[p_id-1]
+			p_id = next_arr[p_id-1]  # 重置, 但不是移到最前
 	return res
 
 
